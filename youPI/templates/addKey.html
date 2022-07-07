@@ -1,18 +1,20 @@
 <div class="flex justify-left mt-12 ml-12 ">
-    <div class="mb-3 w-[55vw] flex">
+    <form method="POST" class="mb-3 w-[55vw] flex">
+      {% csrf_token %}
       <div class="w-[50%]">
         <!-- <label for="addGoogleKey" class="inline-block mb-2 text-gray-700 font-normal"
         >Enter API Key</label
       > -->
       <input
+        name="key"
         type="text"
         class=" block rounded w-full h-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white border-black-500 border-2"
-        id="addGoogleKey"
+        id="key"
         placeholder="Enter API Key"
       />
       </div>
-      <button class="bg-amber-500 text-gray-900 hover:bg-amber-400 font-bold ml-4 h-10 py-2 px-4 border-b-4 border-amber-700 hover:border-amber-500 rounded">
+      <button type="submit" class="bg-amber-500 text-gray-900 hover:bg-amber-400 font-bold ml-4 h-10 py-2 px-4 border-b-4 border-amber-700 hover:border-amber-500 rounded">
         Add Key
       </button>
-    </div>
+    </form>
   </div>

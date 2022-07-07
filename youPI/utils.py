@@ -13,3 +13,14 @@ def insertOne(name,value):
 
 def insertMany(name,value):
     getCollection(name).insert_many(value)
+
+
+
+# Form response to JSON Convertor
+def respToJSON(str):
+    pairs =  str.split("&")
+    resp=dict()
+    for i in pairs :
+        field,value=i.split("=")
+        resp[field]=value
+    return resp
