@@ -9,4 +9,6 @@ def dashboard(request):
 #Form to add multiple Google API keys and
 #see which is expired and which isn't
 def keys(request):
-    return render(request,"keys.html")
+    context ={tokens:[]}
+    # Tokens to be rendered in keys page it will be {id:,token:,active:}  (active will be either 'current','unused', 'expired' )
+    return render(request,"keys.html",context)
