@@ -14,6 +14,15 @@ def insertOne(name,value):
 def insertMany(name,value):
     getCollection(name).insert_many(value)
 
+def makeList(values):
+    out= []
+    for i in values:
+        out.append(i)
+    return out
+
+def findAll(name,query):
+    return makeList(getCollection(name).find(query)) 
+
 
 
 # Form response to JSON Convertor

@@ -1,12 +1,10 @@
 from django.shortcuts import render
-from django.forms.models import model_to_dict
 from .serializers import KeysSerializer
 from .models import Keys
-from utils import insertOne,respToJSON
+from utils import insertOne,respToJSON,findAll
 
 import time
 import uuid
-import json 
 
 #Dashboard to query the api
 def dashboard(request):
@@ -28,9 +26,8 @@ def keys(request):
             serializer = KeysSerializer(val, many=False)
             print(serializer.data)
             insertOne("keys",serializer.data)
-
-
-    context ={"tokens":[]}
-
+    
+    tokens=findAll("keys",{"status":"unused"})
+    context ={"tokens":tokens}
     # Tokens to be rendered in keys page it will be {id:,token:,active:}  (active will be either 'current','unused', 'expired' )
     return render(request,"keys.html",context)

@@ -16,13 +16,22 @@
     <div class="flex mt-8">
         <div class="w-[40%] h-[100%] ml-12 mr-[5%]">
             <div class="text-3xl">Active Keys</div>
-            <div class="bg-amber-100 border-amber-200 border-2 rounded-md p-2 mt-2 mb-2" >axhbvdab588687</div>
-            <div class="bg-green-100 border-green-200 border-2 rounded-md p-2 mt-2 mb-2" >axhbvdab588687</div>
-
+            {% for i in tokens %}
+            {% if i.status == 'current' %}
+                <div class="bg-amber-100 border-amber-200 border-2 rounded-md p-2 mt-2 mb-2" >{{ i.key }}</div>
+            {% endif %}
+            {% if i.status == 'unused' %}
+                <div class="bg-green-100 border-green-200 border-2 rounded-md p-2 mt-2 mb-2" >{{ i.key }}</div>
+            {% endif %}
+            {% endfor %}
         </div>
         <div class="w-[40%] h-[100%] ml-[5%] mr-[5%]">
             <div class="text-3xl">Expired Keys</div>
-            <div class="bg-red-100 border-red-200 border-2 rounded-md p-2 mt-2 mb-2" >axhbvdab588687</div>
+            {% for i in tokens %}
+            {% if i.status == 'expired' %}
+            <div class="bg-red-100 border-red-200 border-2 rounded-md p-2 mt-2 mb-2" >{{ i.key }}</div>
+            {% endif %}
+            {% endfor %}
         </div>
     </div>
 </body>
