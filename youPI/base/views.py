@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .serializers import KeysSerializer
 from .models import Keys
-from utils import insertOne,respToJSON,findAll
+from utils import insertOne,respToJSON,findAll, updateMany
 
 import time
 import uuid
@@ -9,6 +9,8 @@ import uuid
 #Dashboard to query the api
 def dashboard(request):
     return render(request,"dashboard.html")
+
+
 
 
 #Form to add multiple Google API keys and
@@ -27,7 +29,13 @@ def keys(request):
             print(serializer.data)
             insertOne("keys",serializer.data)
     
-    tokens=findAll("keys",{"status":"unused"})
+    tokens=findAll("keys",{"status":"current"})
     context ={"tokens":tokens}
     # Tokens to be rendered in keys page it will be {id:,token:,active:}  (active will be either 'current','unused', 'expired' )
     return render(request,"keys.html",context)
+
+
+def resetKeys(request):
+    res = updateMany("keys",{},{"status":"expired"})
+    print("Resetting here")
+    return res

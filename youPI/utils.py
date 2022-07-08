@@ -1,8 +1,11 @@
 from pymongo import MongoClient
+
+# db =""
+connection_string="mongodb+srv://youtube-api:api-ebutuoy@cluster0.nkhhjii.mongodb.net/?retryWrites=true&w=majority"
+client = MongoClient(connection_string)
+db = client['youtube-api']
+
 def getDB():
-    connection_string="mongodb+srv://youtube-api:api-ebutuoy@cluster0.nkhhjii.mongodb.net/?retryWrites=true&w=majority"
-    client = MongoClient(connection_string)
-    db = client['youtube-api']
     return db
 
 def getCollection(name):
@@ -23,6 +26,8 @@ def makeList(values):
 def findAll(name,query):
     return makeList(getCollection(name).find(query)) 
 
+def updateMany(name,filter,value):
+    return getCollection(name).update_many(filter,{"$set":value})
 
 
 # Form response to JSON Convertor

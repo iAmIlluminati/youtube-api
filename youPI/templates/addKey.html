@@ -1,10 +1,7 @@
 <div class="flex justify-left mt-12 ml-12 ">
-    <form method="POST" class="mb-3 w-[55vw] flex">
+    <form method="POST" class="mb-3 w-[65vw] flex">
       {% csrf_token %}
       <div class="w-[50%]">
-        <!-- <label for="addGoogleKey" class="inline-block mb-2 text-gray-700 font-normal"
-        >Enter API Key</label
-      > -->
       <input
         name="key"
         type="text"
@@ -15,6 +12,9 @@
       </div>
       <button type="submit" class="bg-amber-500 text-gray-900 hover:bg-amber-400 font-bold ml-4 h-10 py-2 px-4 border-b-4 border-amber-700 hover:border-amber-500 rounded">
         Add Key
+      </button>
+      <button class="bg-green-500 float-left text-gray-900 hover:bg-green-400 font-bold ml-4 h-10 py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
+        Rest Expired Keys
       </button>
     </form>
   </div>
