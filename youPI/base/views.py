@@ -1,23 +1,28 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from httplib2 import Response
-from .serializers import KeysSerializer
+from pexpect import TIMEOUT
+
+from .serializers import KeysSerializer,FetchedDataSerializer
 from .models import Keys
-from utils import  insertMany,updateOne,insertOne,respToJSON,findAll, updateMany
+from utils import getPagedFind, insertMany,updateOne,insertOne,respToJSON,findAll, updateMany
+
+import pymongo
 import datetime
 import time
 import uuid
 import asyncio
 import os
-
 import googleapiclient.discovery
 
 
+
+# --------------------------------------------------------------------------------------------------
+
+
 background_tasks = set()
-
-
-
-
+TIME_DELAY = 15  
+#Period of API fetch 
 
 
 # Converting the fetch values into required format
@@ -56,28 +61,31 @@ async def fetchFromYoutubeAPI():
         q="comedy|football|cricket|hindi|english",
         type="video"
     )
-    response = request.execute()
+    response = request.execute()    
+    serializer = FetchedDataSerializer(filterFetchResult(response), many=False)
+    insertMany("videos",serializer.data)
     # print(filterFetchResult(response))
-    insertMany("videos",filterFetchResult(response))
+    # for val in filterFetchResult(response):
+    #     serializer = FetchedDataSerializer(val, many=False)
+    #     print(serializer.data)
+    #     insertOne("videos",serializer.data)
+
 
 
 
 # To start the background process
 async def fetchAPI(request):
     try:
-
         task = asyncio.create_task(fetchFromYoutubeAPI())
         # Add task to the set. This creates a strong reference.
         background_tasks.add(task)
         while True:
             await fetchFromYoutubeAPI()
-            await asyncio.sleep(5)
+            await asyncio.sleep(TIME_DELAY)
         # task.add_done_callback(background_tasks.discard)
     except:
         print("Error in fetchAPI")
     return redirect("dashboard")
-
-
 
 # To stop the background process
 def stopAPI(request):
@@ -85,14 +93,24 @@ def stopAPI(request):
     background_tasks.cancel()
     return HttpResponse("Hello")
 
+# --------------------------------------------------------------------------------------------------
 
+
+
+
+PAGESIZE=6
+PAGENUM=1
 # DASHBOARD APIS
 #Dashboard to query the api
 def dashboard(request):
+    PAGENUM = 1
+    videos = getPagedFind("videos",{},pymongo.DESCENDING,PAGESIZE,PAGENUM)
+    print(videos)
     return render(request,"dashboard.html")
 
 
 
+# ------------------------------------------------------------------------------------------------------
 
 
 # KEYS PAGE AND ITS ROUTES
@@ -110,15 +128,13 @@ def keys(request):
         if(key):
             val = Keys(id=uuid.uuid4().hex,key=key,status="unused",time=local_time)
             serializer = KeysSerializer(val, many=False)
-            print(serializer.data)
+            # print(serializer.data)
             insertOne("keys",serializer.data)
     
     tokens=findAll("keys",{})
     context ={"tokens":tokens}
     # Tokens to be rendered in keys page it will be {id:,token:,active:}  (active will be either 'current','unused', 'expired' )
     return render(request,"keys.html",context)
-
-
 
 
 def setOneAsCurrent() :
