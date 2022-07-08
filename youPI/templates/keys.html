@@ -2,11 +2,12 @@
 <html lang="en" dir="ltr">
 
 <head>
+  {% load static %}
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="js/keys.js"></script>
+  <script src={% static "js/keys.js" %}></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
   <title>YouPI - Keys</title>
 </head>
@@ -17,7 +18,6 @@
         <div class="w-[40%] h-[100%] ml-12 mr-[5%]">
             <div class="text-3xl">Active Keys</div>
             {% for i in tokens %}
-            <div>{{ i.status }}</div>
 
             {% if i.status == 'current' %}
                 <div class="bg-amber-100 border-amber-200 border-2 rounded-md p-2 mt-2 mb-2" >{{ i.key }}</div>

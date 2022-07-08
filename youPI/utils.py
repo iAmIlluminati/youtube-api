@@ -29,6 +29,9 @@ def findAll(name,query):
 def updateMany(name,filter,value):
     return getCollection(name).update_many(filter,{"$set":value})
 
+def updateOne(name,filter,value):
+    return getCollection(name).update_one(filter,{"$set":value})
+
 
 # Form response to JSON Convertor
 def respToJSON(str):

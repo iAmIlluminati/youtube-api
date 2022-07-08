@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .serializers import KeysSerializer
 from .models import Keys
-from utils import insertOne,respToJSON,findAll, updateMany
+from utils import  updateOne,insertOne,respToJSON,findAll, updateMany
 
 import time
 import uuid
@@ -29,13 +29,43 @@ def keys(request):
             print(serializer.data)
             insertOne("keys",serializer.data)
     
-    tokens=findAll("keys",{"status":"current"})
+    tokens=findAll("keys",{})
     context ={"tokens":tokens}
     # Tokens to be rendered in keys page it will be {id:,token:,active:}  (active will be either 'current','unused', 'expired' )
     return render(request,"keys.html",context)
 
 
+
+
+def setOneAsCurrent() :
+    return updateOne("keys",{"status":"unused"},{"status":"current"})
+
+
+def changeExpiredKey():
+    updateOne("keys",{"status":"current"},{"status":"expired"})
+    updateOne("keys",{"status":"unused"},{"status":"current"})
+    return {"message" :"Successfully changed the key"}
+
+
+
 def resetKeys(request):
-    res = updateMany("keys",{},{"status":"expired"})
-    print("Resetting here")
-    return res
+    updateMany("keys",{},{"status":"unused"})
+    setOneAsCurrent()
+    return {"message" :"Successfully reseted"}
+
+
+
+
+
+
+
+
+
+#     def setOneAsCurrent() :
+#     updateOne("keys",{},{"status":"current"})
+
+# def resetKeys(request):
+#     updateMany("keys",{},{"status":"unused"})
+#     setOneAsCurrent()
+#     print("Resetting here")
+#     return {"message" :"Successfully reseted"}
