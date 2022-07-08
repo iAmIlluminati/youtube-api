@@ -3,21 +3,66 @@ from django.shortcuts import render,redirect
 from httplib2 import Response
 from .serializers import KeysSerializer
 from .models import Keys
-from utils import  updateOne,insertOne,respToJSON,findAll, updateMany
-
+from utils import  insertMany,updateOne,insertOne,respToJSON,findAll, updateMany
+import datetime
 import time
 import uuid
 import asyncio
+import os
 
-async def fetchFromYoutubeAPI():
-    print('Hello World')
-
+import googleapiclient.discovery
 
 
 background_tasks = set()
 
 
-isFetchActive = False 
+
+
+
+
+# Converting the fetch values into required format
+def filterFetchResult(data):
+    items = data['items']
+    formattedList = list()
+    for item in items:
+        # print(item)
+        item=dict(item)
+        formattedList.append({
+            "_id":item["id"]["videoId"],
+            "thumbnail": "https://i.ytimg.com/vi/"+item["id"]["videoId"]+"/hqdefault.jpg",
+            "publishedAt":item["snippet"]["publishedAt"],
+            "title":item["snippet"]["title"],
+            "description":item["snippet"]["description"],
+       })
+    return formattedList
+
+
+
+# Fetch function  that uses google API
+async def fetchFromYoutubeAPI():
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
+    api_service_name = "youtube"
+    api_version = "v3"
+    DEVELOPER_KEY = "AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
+
+    youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey = DEVELOPER_KEY)
+    dt = datetime.datetime.now() - datetime.timedelta(seconds=10)
+    dt =dt.isoformat('T')+'Z'
+    request = youtube.search().list(
+        part="snippet",
+        order="date",
+        publishedAfter=dt,
+        q="comedy|football|cricket|hindi|english",
+        type="video"
+    )
+    response = request.execute()
+    print(response)
+    # insertMany("videos",filterFetchResult(response))
+
+
+
+# To start the background process
 async def fetchAPI(request):
     try:
 
@@ -32,10 +77,13 @@ async def fetchAPI(request):
         print("Error in fetchAPI")
     return redirect("dashboard")
 
-# def stopAPI(request):
-#     print(background_tasks)
-#     background_tasks.cancel()
-#     return HttpResponse("Hello")
+
+
+# To stop the background process
+def stopAPI(request):
+    print(background_tasks)
+    background_tasks.cancel()
+    return HttpResponse("Hello")
 
 
 # DASHBOARD APIS
