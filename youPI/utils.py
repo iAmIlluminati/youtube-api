@@ -15,13 +15,18 @@ def insertOne(name,value):
     getCollection(name).insert_one(value)
 
 def insertMany(name,value):
-    getCollection(name).insert_many(value)
-
+    for i in value:
+        try:
+            getCollection(name).insert_one(i)
+        except:
+            print("Possible duplicate key",i['_id'])
 def makeList(values):
     out= []
     for i in values:
         out.append(i)
     return out
+
+
 
 def findAll(name,query):
     return makeList(getCollection(name).find(query)) 
@@ -31,7 +36,6 @@ def updateMany(name,filter,value):
 
 def updateOne(name,filter,value):
     return getCollection(name).update_one(filter,{"$set":value})
-
 
 # Form response to JSON Convertor
 def respToJSON(str):
