@@ -9,7 +9,14 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
   <title>YouPI Dashboard</title>
 </head>
-<body>
+<body class="bg-gray-100">
   {% include 'navbar.html' %}
-    
+  <div class="grid grid-cols-2 mt-2 mb-4 grid-gap-[5vw] mr-[2.5vw] ml-[2.5vw]">
+    {% include 'card.html' %}
+    {% include 'card.html' %}
+    {% include 'card.html' %}
+    {% include 'card.html' %}
+    {% include 'card.html' %}
+    {% include 'card.html' %}
+  </div>    
 </body>

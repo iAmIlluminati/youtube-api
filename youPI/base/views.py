@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from httplib2 import Response
 from .serializers import KeysSerializer
 from .models import Keys
 from utils import  updateOne,insertOne,respToJSON,findAll, updateMany
@@ -41,17 +42,21 @@ def setOneAsCurrent() :
     return updateOne("keys",{"status":"unused"},{"status":"current"})
 
 
+
+#for chnaging the keys, picking the current active and chnaging it to expires
+#taking a unused one and setting it to current
 def changeExpiredKey():
     updateOne("keys",{"status":"current"},{"status":"expired"})
     updateOne("keys",{"status":"unused"},{"status":"current"})
     return {"message" :"Successfully changed the key"}
 
 
-
+#Fix the return type
+#TODO on reseting the page  is rendered before updating one as current 
 def resetKeys(request):
     updateMany("keys",{},{"status":"unused"})
     setOneAsCurrent()
-    return {"message" :"Successfully reseted"}
+    return Response({"message" :"Successfully reseted"})
 
 
 

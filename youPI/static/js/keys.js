@@ -1,4 +1,4 @@
-window.get = function(url, data) {
+window.get = function(url) {
     return fetch(url, {method: "GET"});
   }
 function resetExpiredToken(){
@@ -8,6 +8,5 @@ function resetExpiredToken(){
         console.log(res.message);
     }).catch((e)=>{
         console.log(e);
-    })
-    
+    })    
 }
