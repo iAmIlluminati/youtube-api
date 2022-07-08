@@ -11,12 +11,10 @@
 </head>
 <body class="bg-gray-100">
   {% include 'navbar.html' %}
-  <div class="grid grid-cols-2 mt-2 mb-4 grid-gap-[5vw] mr-[2.5vw] ml-[2.5vw]">
-    {% include 'card.html' %}
-    {% include 'card.html' %}
-    {% include 'card.html' %}
-    {% include 'card.html' %}
-    {% include 'card.html' %}
-    {% include 'card.html' %}
+  {% include 'filtersDash.html' %}
+  <div class="grid grid-cols-2 mt-2 mb-4 grid-gap-[5vw] mr-[3vw] ml-[4vw]">
+    {% for i in videos %}
+    {% include 'card.html' with video=i %}
+    {% endfor %}
   </div>    
 </body>

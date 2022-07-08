@@ -34,7 +34,7 @@ def filterFetchResult(data):
         item=dict(item)
         formattedList.append({
             "_id":item["id"]["videoId"],
-            "thumbnail": "https://i.ytimg.com/vi/"+item["id"]["videoId"]+"/hqdefault.jpg",
+            "thumbnail": "https://i.ytimg.com/vi/"+item["id"]["videoId"]+"/hqdefault.jpg ",
             "publishedAt":item["snippet"]["publishedAt"],
             "title":item["snippet"]["title"],
             "description":item["snippet"]["description"],
@@ -98,15 +98,39 @@ def stopAPI(request):
 
 
 
-PAGESIZE=6
-PAGENUM=1
+
 # DASHBOARD APIS
 #Dashboard to query the api
 def dashboard(request):
-    PAGENUM = 1
-    videos = getPagedFind("videos",{},pymongo.DESCENDING,PAGESIZE,PAGENUM)
-    print(videos)
-    return render(request,"dashboard.html")
+    PAGESIZE=6
+    PAGENUM=1
+    PAGESORT=-1
+    PAGEFILTER={}
+    if(request.GET.get('page', '')):
+        try: 
+            PAGENUM = int(request.GET.get('page', ''))
+        except:
+            PAGENUM=1
+    if(request.GET.get('sort', '')):
+        try: 
+            PAGESORT = int(request.GET.get('sort', ''))
+            if(PAGESORT==-1):
+                PAGESORT=pymongo.DESCENDING
+            else:
+                PAGESORT=pymongo.ASCENDING
+        except:                
+            PAGESORT=pymongo.DESCENDING
+
+
+    if(request.GET.get('title', '')):
+        try: 
+            PAGEFILTER = {"title":request.GET.get('title', '')}
+        except:
+            PAGEFILTER={}
+            
+    videos = getPagedFind("videos",PAGEFILTER,PAGESORT,PAGESIZE,PAGENUM)
+    context ={"videos":videos}
+    return render(request,"dashboard.html",context)
 
 
 

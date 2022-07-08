@@ -12,7 +12,6 @@ db["videos"].create_index([('publishedAt',pymongo.ASCENDING)], name="videos_inde
 def getDB():
     return db
 
-
 def getCollection(name):
     return getDB()[name]
 
@@ -25,13 +24,12 @@ def insertMany(name,value):
             getCollection(name).insert_one(i)
         except:
             print("Possible duplicate key",i['_id'])
+
 def makeList(values):
     out= []
     for i in values:
         out.append(i)
     return out
-
-
 
 def findAll(name,query):
     return makeList(getCollection(name).find(query)) 
