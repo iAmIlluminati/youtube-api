@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render,redirect
 from httplib2 import Response
 from .serializers import KeysSerializer
 from .models import Keys
@@ -6,13 +7,53 @@ from utils import  updateOne,insertOne,respToJSON,findAll, updateMany
 
 import time
 import uuid
+import asyncio
 
+async def fetchFromYoutubeAPI():
+    print('Hello World')
+
+
+
+background_tasks = set()
+
+
+isFetchActive = False 
+async def fetchAPI(request):
+    try:
+
+        task = asyncio.create_task(fetchFromYoutubeAPI())
+        # Add task to the set. This creates a strong reference.
+        background_tasks.add(task)
+        while True:
+            await fetchFromYoutubeAPI()
+            await asyncio.sleep(5)
+        # task.add_done_callback(background_tasks.discard)
+    except:
+        print("Error in fetchAPI")
+    return redirect("dashboard")
+
+# def stopAPI(request):
+#     print(background_tasks)
+#     background_tasks.cancel()
+#     return HttpResponse("Hello")
+
+
+# DASHBOARD APIS
 #Dashboard to query the api
 def dashboard(request):
     return render(request,"dashboard.html")
 
 
 
+
+
+
+
+
+
+
+
+# KEYS PAGE AND ITS ROUTES
 
 #Form to add multiple Google API keys and
 #see which is expired and which isn't
@@ -62,15 +103,3 @@ def resetKeys(request):
 
 
 
-
-
-
-
-#     def setOneAsCurrent() :
-#     updateOne("keys",{},{"status":"current"})
-
-# def resetKeys(request):
-#     updateMany("keys",{},{"status":"unused"})
-#     setOneAsCurrent()
-#     print("Resetting here")
-#     return {"message" :"Successfully reseted"}
