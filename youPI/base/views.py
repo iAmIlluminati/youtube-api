@@ -41,24 +41,24 @@ def filterFetchResult(data):
 # Fetch function  that uses google API
 async def fetchFromYoutubeAPI():
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-
+    print("Fetch Performed")
     api_service_name = "youtube"
     api_version = "v3"
     DEVELOPER_KEY = "AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
 
     youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey = DEVELOPER_KEY)
-    dt = datetime.datetime.now() - datetime.timedelta(seconds=10)
-    dt =dt.isoformat('T')+'Z'
+    dt = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=230)
+    dateConstrain =str(dt.isoformat())
     request = youtube.search().list(
         part="snippet",
         order="date",
-        publishedAfter=dt,
+        publishedAfter=dateConstrain,
         q="comedy|football|cricket|hindi|english",
         type="video"
     )
     response = request.execute()
-    print(response)
-    # insertMany("videos",filterFetchResult(response))
+    # print(filterFetchResult(response))
+    insertMany("videos",filterFetchResult(response))
 
 
 
@@ -90,12 +90,6 @@ def stopAPI(request):
 #Dashboard to query the api
 def dashboard(request):
     return render(request,"dashboard.html")
-
-
-
-
-
-
 
 
 
