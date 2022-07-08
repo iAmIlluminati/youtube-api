@@ -14,11 +14,12 @@ class Keys(models.Model):
 
 
 #Holds the data fetched from youtube
-class FetchData(models.Model):
-    id = models.CharField(primary_key=True,max_length=32)
+class FetchedData(models.Model):
+    _id = models.CharField(primary_key=True,max_length=32)
     title = models.CharField(max_length=100)
     description =models.TextField()
-    publishedAt=models.DateTimeField(auto_now_add=True)
     thumbnail=models.CharField(max_length=200)
+    publishedAt=models.CharField(max_length=40)
+    # The RFC 3339 Format can 8
     def __str__(self):
         return self.key

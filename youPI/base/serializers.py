@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Keys, FetchData
+from .models import Keys, FetchedData
 
 
 class KeysSerializer(ModelSerializer):
@@ -7,7 +7,7 @@ class KeysSerializer(ModelSerializer):
         model = Keys
         fields = '__all__'
         
-class FetchDataSerializer(ModelSerializer):
+class FetchedDataSerializer(ModelSerializer):
     class Meta:
-        model = FetchData
+        model = FetchedData
         fields = '__all__'
