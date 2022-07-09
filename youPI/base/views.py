@@ -21,6 +21,8 @@ from googleapiclient.errors import HttpError
 def setOneAsCurrent() :
     return updateOne("keys",{"status":"unused"},{"status":"current"})
 
+
+# TODO Need to see on why fineOne is not working
 # Get the current active key before fetching
 def getCurrentKey():
     return findAll("keys",{"status":"current"})[0]["key"]
@@ -54,7 +56,7 @@ def resetAllKeys():
 background_tasks = set()
 TIME_DELAY = 15  
 #Period of API fetch 
-QUERYLIST =["polimer news","tiktok","comedy","football""cricket","hindi","english"]
+QUERYLIST =["polimer news","songs","album","comedy","football""cricket","hindi","english"]
  
 
 # Converting the fetch values into required format
@@ -83,9 +85,7 @@ async def fetchFromYoutubeAPI():
     api_version = "v3"
     DEVELOPER_KEY=""
     try:
-        print("Thsi")
         DEVELOPER_KEY = getCurrentKey()
-        print("Thsi")
     except:
         # Need to see if every key is set as unused, leading to 
         # Out of 2 db calls, only the set as current happens 
@@ -93,7 +93,7 @@ async def fetchFromYoutubeAPI():
         setOneAsCurrent()
         print("No unused developer key, in database")
         # return    
-    #     # AIzaSyBjDaGABR5yhbQfRWrgwgT8_-2Mt5LLlFM
+    # AIzaSyBjDaGABR5yhbQfRWrgwgT8_-2Mt5LLlFM
     # DEVELOPER_KEY ="AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
     youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey = DEVELOPER_KEY)
     dt = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=230)
@@ -107,15 +107,18 @@ async def fetchFromYoutubeAPI():
     )
     try:
         response = request.execute() 
-        print(response) 
+        # print(response) 
         for val in filterFetchResult(response):
             serializer = FetchedDataSerializer(val, many=False)
-            print(serializer.data)
+            # print(serializer.data)
             insertOne("videos",serializer.data)
         # serializer = FetchedDataSerializer(filterFetchResult(response), many=True)
         # insertMany("videos",serializer.data)
+        print("Videos Added")
     except HttpError as e:
         response=[]
+        # Need to handle this with error message for more accuracy
+        # Documentation wasnt clear    
         ec =e.resp.status
         if(ec == 403):
             print(changeExpiredKey())
@@ -207,6 +210,12 @@ def dashboard(request,page=1):
     
     videos = getPagedFind("videos",PAGEFILTER,PAGESORT,PAGESIZE,PAGENUM)
     if len(videos)==0 :
+        #TODO base case when there is no video in database needs to be handled
+        v =findAll("videos",{})
+        if(len(v)==0):
+            print("Here")
+            context ={"params":{"npage":"\1","ppage":"\1"}}
+            return render(request,"dashboard.html",context)
         return redirect("/1")
     params={
         "title":title,

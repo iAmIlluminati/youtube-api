@@ -9,4 +9,5 @@ function resetExpiredToken(){
     }).catch((e)=>{
         console.log(e);
     })    
+    window.location.replace("/keys");
 }
