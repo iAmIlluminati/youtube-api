@@ -1,8 +1,6 @@
-from urllib.error import HTTPError
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from httplib2 import Response
-from pexpect import TIMEOUT
 
 from .serializers import KeysSerializer,FetchedDataSerializer
 from .models import Keys
@@ -11,7 +9,6 @@ from utils import removeOne,findOne,getPagedFind, insertMany,updateOne,insertOne
 import pymongo
 import datetime
 import time
-import uuid
 import asyncio
 import os
 import googleapiclient.discovery
@@ -26,7 +23,7 @@ def setOneAsCurrent() :
 
 # Get the current active key before fetching
 def getCurrentKey():
-    return findOne("keys",{"status":"current"})
+    return findAll("keys",{"status":"current"})[0]["key"]
 
 def removeInvalidKey():
     removeOne("keys",{"status":"current"})
@@ -38,6 +35,8 @@ def changeExpiredKey():
     updateOne("keys",{"status":"current"},{"status":"expired"})
     updateOne("keys",{"status":"unused"},{"status":"current"})
     return 
+
+
 
 def resetAllKeys():
     updateMany("keys",{},{"status":"unused"})
@@ -82,13 +81,20 @@ async def fetchFromYoutubeAPI():
     print("ATTEMPING FETCH")
     api_service_name = "youtube"
     api_version = "v3"
-    print("Here")
-    # try:
-    #     DEVELOPER_KEY = getCurrentKey()
-    # except:
-    #     print("No developer key, in database")
-    #     return    
-    DEVELOPER_KEY ="AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
+    DEVELOPER_KEY=""
+    try:
+        print("Thsi")
+        DEVELOPER_KEY = getCurrentKey()
+        print("Thsi")
+    except:
+        # Need to see if every key is set as unused, leading to 
+        # Out of 2 db calls, only the set as current happens 
+        # As there is no current for now
+        setOneAsCurrent()
+        print("No unused developer key, in database")
+        # return    
+    #     # AIzaSyBjDaGABR5yhbQfRWrgwgT8_-2Mt5LLlFM
+    # DEVELOPER_KEY ="AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
     youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey = DEVELOPER_KEY)
     dt = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=230)
     dateConstrain =str(dt.isoformat())
@@ -229,7 +235,7 @@ def keys(request):
         body = respToJSON(body_unicode)
         key = body['key']
         if(key):
-            val = Keys(id=uuid.uuid4().hex,key=key,status="unused",time=local_time)
+            val = Keys(key=key,status="unused",time=local_time)
             serializer = KeysSerializer(val, many=False)
             # print(serializer.data)
             insertOne("keys",serializer.data)
@@ -242,7 +248,7 @@ def keys(request):
 
 def resetKeys(request):
     resetAllKeys()
-    return Response({"message" :"Successfully reseted"})
+    return HttpResponse({"message" :"Successfully reseted"})
 
 
 
