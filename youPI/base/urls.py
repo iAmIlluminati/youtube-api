@@ -3,7 +3,7 @@ from . import views
 urlpatterns = [
     
     path('', views.dashboard,name='dashboard'),
-    path('<str:page>', views.dashboard,name='dashboard'),
+    path('<int:page>', views.dashboard,name='dashboard'),
 
     path('keys', views.keys,name='keys'),
     path('reset', views.resetKeys,name='reset'),

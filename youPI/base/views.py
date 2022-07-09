@@ -1,3 +1,4 @@
+from urllib.error import HTTPError
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from httplib2 import Response
@@ -5,7 +6,7 @@ from pexpect import TIMEOUT
 
 from .serializers import KeysSerializer,FetchedDataSerializer
 from .models import Keys
-from utils import getPagedFind, insertMany,updateOne,insertOne,respToJSON,findAll, updateMany
+from utils import removeOne,findOne,getPagedFind, insertMany,updateOne,insertOne,respToJSON,findAll, updateMany
 
 import pymongo
 import datetime
@@ -14,7 +15,38 @@ import uuid
 import asyncio
 import os
 import googleapiclient.discovery
+import random
+from googleapiclient.errors import HttpError
 
+
+
+
+def setOneAsCurrent() :
+    return updateOne("keys",{"status":"unused"},{"status":"current"})
+
+# Get the current active key before fetching
+def getCurrentKey():
+    return findOne("keys",{"status":"current"})
+
+def removeInvalidKey():
+    removeOne("keys",{"status":"current"})
+    setOneAsCurrent()
+
+#for chnaging the keys, picking the current active and chnaging it to expires
+#taking a unused one and setting it to current
+def changeExpiredKey():
+    updateOne("keys",{"status":"current"},{"status":"expired"})
+    updateOne("keys",{"status":"unused"},{"status":"current"})
+    return 
+
+def resetAllKeys():
+    updateMany("keys",{},{"status":"unused"})
+    setOneAsCurrent()
+    return Response({"message" :"Successfully reseted"})
+
+
+#Fix the return type
+#TODO on reseting the page  is rendered before updating one as current 
 
 
 # --------------------------------------------------------------------------------------------------
@@ -23,7 +55,8 @@ import googleapiclient.discovery
 background_tasks = set()
 TIME_DELAY = 15  
 #Period of API fetch 
-
+QUERYLIST =["polimer news","tiktok","comedy","football""cricket","hindi","english"]
+ 
 
 # Converting the fetch values into required format
 def filterFetchResult(data):
@@ -46,11 +79,11 @@ def filterFetchResult(data):
 # Fetch function  that uses google API
 async def fetchFromYoutubeAPI():
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-    print("Fetch Performed")
+    print("ATTEMPING FETCH")
     api_service_name = "youtube"
     api_version = "v3"
-    DEVELOPER_KEY = "AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
-
+    DEVELOPER_KEY = getCurrentKey()
+# "AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
     youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey = DEVELOPER_KEY)
     dt = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=230)
     dateConstrain =str(dt.isoformat())
@@ -58,12 +91,25 @@ async def fetchFromYoutubeAPI():
         part="snippet",
         order="date",
         publishedAfter=dateConstrain,
-        q="comedy|football|cricket|hindi|english",
+        q=random.choice(QUERYLIST),
         type="video"
     )
-    response = request.execute()    
-    serializer = FetchedDataSerializer(filterFetchResult(response), many=False)
-    insertMany("videos",serializer.data)
+    try:
+        response = request.execute()  
+        serializer = FetchedDataSerializer(filterFetchResult(response), many=False)
+        insertMany("videos",serializer.data)
+    except HttpError as e:
+        response=[]
+        ec =e.resp.status
+        if(ec == 403):
+            print(changeExpiredKey())
+            print("Quota Over on ",DEVELOPER_KEY)
+        else:
+            # Remove the invalid key
+            removeInvalidKey()
+            print("Invalid Key ",DEVELOPER_KEY)
+    except :
+        print("Youtube API Failed, possible unhandled error")
     # print(filterFetchResult(response))
     # for val in filterFetchResult(response):
     #     serializer = FetchedDataSerializer(val, many=False)
@@ -79,12 +125,19 @@ async def fetchAPI(request):
         task = asyncio.create_task(fetchFromYoutubeAPI())
         # Add task to the set. This creates a strong reference.
         background_tasks.add(task)
-        while True:
-            await fetchFromYoutubeAPI()
-            await asyncio.sleep(TIME_DELAY)
-        # task.add_done_callback(background_tasks.discard)
-    except:
-        print("Error in fetchAPI")
+        try:    
+            while True:
+                await fetchFromYoutubeAPI()
+                await asyncio.sleep(TIME_DELAY)
+            # task.add_done_callback(background_tasks.discard)
+        except HttpError as e:
+            print(e.resp.status, e.content)
+        except :
+            print("The async call function is down")        
+    except HttpError as e:
+        print(e.resp.status, e.content)
+    except :
+        print("The async call function is down")
     return redirect("dashboard")
 
 # To stop the background process
@@ -177,26 +230,9 @@ def keys(request):
     return render(request,"keys.html",context)
 
 
-def setOneAsCurrent() :
-    return updateOne("keys",{"status":"unused"},{"status":"current"})
-
-
-
-#for chnaging the keys, picking the current active and chnaging it to expires
-#taking a unused one and setting it to current
-def changeExpiredKey():
-    updateOne("keys",{"status":"current"},{"status":"expired"})
-    updateOne("keys",{"status":"unused"},{"status":"current"})
-    return {"message" :"Successfully changed the key"}
-
-
-#Fix the return type
-#TODO on reseting the page  is rendered before updating one as current 
 def resetKeys(request):
-    updateMany("keys",{},{"status":"unused"})
-    setOneAsCurrent()
+    resetAllKeys()
     return Response({"message" :"Successfully reseted"})
-
 
 
 
