@@ -11,7 +11,7 @@
 </head>
 <body class="bg-gray-100">
   {% include 'navbar.html' %}
-  {% include 'filtersDash.html' %}
+  {% include 'filtersDash.html' with params=params %}
   <div class="grid grid-cols-2 mt-2 mb-4 grid-gap-[5vw] mr-[3vw] ml-[4vw]">
     {% for i in videos %}
     {% include 'card.html' with video=i %}

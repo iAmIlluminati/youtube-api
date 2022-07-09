@@ -106,7 +106,7 @@ def dashboard(request,page=1):
     PAGESORT=pymongo.DESCENDING
     PAGEFILTER={}
     title=""
-    
+    sort=0
     try:
         PAGENUM=round(float(page))
         if(PAGENUM<=0):
@@ -119,10 +119,13 @@ def dashboard(request,page=1):
         try: 
             PAGESORT = int(request.GET.get('sort', ''))
             if(PAGESORT==0):
+                sort=0
                 PAGESORT=pymongo.DESCENDING
             else:
+                sort=1
                 PAGESORT=pymongo.ASCENDING
-        except:                
+        except:            
+            sort=0    
             PAGESORT=pymongo.DESCENDING
     
     if(request.GET.get('title', '')):
@@ -134,12 +137,15 @@ def dashboard(request,page=1):
             PAGEFILTER={}
     
     videos = getPagedFind("videos",PAGEFILTER,PAGESORT,PAGESIZE,PAGENUM)
+    if len(videos)==0 :
+        return redirect("/1")
     params={
         "title":title,
-        "sort":PAGESORT,
-        "page":PAGENUM
+        "sort":sort,
+        "npage":str(PAGENUM+1)+"?title="+title+"&sort="+str(sort),
+        "ppage":str(PAGENUM-1)+"?title="+title+"&sort="+str(sort)
     }
-    context ={"videos":videos}
+    context ={"videos":videos, "params":params}
     return render(request,"dashboard.html",context)
 
 
