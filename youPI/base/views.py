@@ -94,8 +94,7 @@ async def fetchFromYoutubeAPI():
         setOneAsCurrent()
         print("No unused developer key, in database")
         # return    
-    # AIzaSyBjDaGABR5yhbQfRWrgwgT8_-2Mt5LLlFM
-    # DEVELOPER_KEY ="AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
+    # DEVELOPER_KEY ="ENTER THE KEY HERE"
     youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey = DEVELOPER_KEY)
     dt = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=230)
     dateConstrain =str(dt.isoformat())

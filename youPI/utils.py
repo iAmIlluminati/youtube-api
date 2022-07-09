@@ -2,6 +2,7 @@ import pymongo
 # db =""
 try:
     # CAN USE ENIRONMENT VARIABLE INSTEAD OF THIS
+    #IGNORE THIS LESS SECURE ONE, WANTED THE ASSIGNMTNT TO BE EASILY TESTABLE
     connection_string="mongodb+srv://youtube-api:api-ebutuoy@cluster0.nkhhjii.mongodb.net/?retryWrites=true&w=majority"
     client = pymongo.MongoClient(connection_string)
     db = client['youtube-api']
