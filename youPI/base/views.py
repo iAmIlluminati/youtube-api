@@ -214,7 +214,7 @@ def dashboard(request,page=1):
         v =findAll("videos",{})
         if(len(v)==0):
             print("Here")
-            context ={"params":{"npage":"\1","ppage":"\1"}}
+            context ={"params":{"npage":"\1","ppage":"\1","page":1}}
             return render(request,"dashboard.html",context)
         return redirect("/1")
    
@@ -222,7 +222,8 @@ def dashboard(request,page=1):
         "title":title,
         "sort":sort,
         "npage":str(PAGENUM+1)+"?title="+title+"&sort="+str(sort),
-        "ppage":str(PAGENUM-1)+"?title="+title+"&sort="+str(sort)
+        "ppage":str(PAGENUM-1)+"?title="+title+"&sort="+str(sort),
+        "page":PAGENUM,
     }
     context ={"videos":videos, "params":params}
     return render(request,"dashboard.html",context)
