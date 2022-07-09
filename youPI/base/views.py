@@ -6,6 +6,7 @@ from .serializers import KeysSerializer,FetchedDataSerializer
 from .models import Keys
 from utils import removeOne,findOne,getPagedFind, insertMany,updateOne,insertOne,respToJSON,findAll, updateMany
 
+
 import pymongo
 import datetime
 import time
@@ -17,7 +18,7 @@ from googleapiclient.errors import HttpError
 
 
 
-
+# --------------------------------------------------------------------------------------------------------
 def setOneAsCurrent() :
     return updateOne("keys",{"status":"unused"},{"status":"current"})
 
@@ -114,7 +115,7 @@ async def fetchFromYoutubeAPI():
             insertOne("videos",serializer.data)
         # serializer = FetchedDataSerializer(filterFetchResult(response), many=True)
         # insertMany("videos",serializer.data)
-        print("Videos Added")
+        print(response)
     except HttpError as e:
         response=[]
         # Need to handle this with error message for more accuracy
@@ -160,10 +161,10 @@ async def fetchAPI(request):
     return redirect("dashboard")
 
 # To stop the background process
-def stopAPI(request):
-    print(background_tasks)
-    background_tasks.cancel()
-    return HttpResponse("Hello")
+# def stopAPI(request):
+#     print(background_tasks)
+#     background_tasks.cancel()
+#     return HttpResponse("Hello")
 
 # --------------------------------------------------------------------------------------------------
 
@@ -210,13 +211,13 @@ def dashboard(request,page=1):
     
     videos = getPagedFind("videos",PAGEFILTER,PAGESORT,PAGESIZE,PAGENUM)
     if len(videos)==0 :
-        #TODO base case when there is no video in database needs to be handled
         v =findAll("videos",{})
         if(len(v)==0):
             print("Here")
             context ={"params":{"npage":"\1","ppage":"\1"}}
             return render(request,"dashboard.html",context)
         return redirect("/1")
+   
     params={
         "title":title,
         "sort":sort,

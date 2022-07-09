@@ -12,6 +12,7 @@ try:
 except:
     print("Error in accessing the DB, check the connection URL")
 
+
 def getDB():
     return db
 
