@@ -34,6 +34,10 @@ def makeList(values):
 def findAll(name,query):
     return makeList(getCollection(name).find(query)) 
 
+def findOne(name,query):
+    return makeList(getCollection(name).find_one(query)) 
+
+
 def getPagedFind(name,query,sortBy,pageSize,pageNum):
     skipValue=(pageNum-1)*pageSize
     return makeList(getCollection(name).find(query).sort("publishedAt",sortBy).skip(skipValue).limit(pageSize))
@@ -45,6 +49,8 @@ def updateMany(name,filter,value):
 def updateOne(name,filter,value):
     return getCollection(name).update_one(filter,{"$set":value})
 
+def removeOne(name,filter):
+    return getCollection(name).delete_one(filter)
 # Form response to JSON Convertor
 def respToJSON(str):
     pairs =  str.split("&")
