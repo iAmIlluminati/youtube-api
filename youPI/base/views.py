@@ -82,8 +82,13 @@ async def fetchFromYoutubeAPI():
     print("ATTEMPING FETCH")
     api_service_name = "youtube"
     api_version = "v3"
-    DEVELOPER_KEY = getCurrentKey()
-# "AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
+    print("Here")
+    # try:
+    #     DEVELOPER_KEY = getCurrentKey()
+    # except:
+    #     print("No developer key, in database")
+    #     return    
+    DEVELOPER_KEY ="AIzaSyAivgYkgvaxuYB4NoXf2HYuBDQ0pFEWnWE"
     youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey = DEVELOPER_KEY)
     dt = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=230)
     dateConstrain =str(dt.isoformat())
@@ -95,9 +100,14 @@ async def fetchFromYoutubeAPI():
         type="video"
     )
     try:
-        response = request.execute()  
-        serializer = FetchedDataSerializer(filterFetchResult(response), many=False)
-        insertMany("videos",serializer.data)
+        response = request.execute() 
+        print(response) 
+        for val in filterFetchResult(response):
+            serializer = FetchedDataSerializer(val, many=False)
+            print(serializer.data)
+            insertOne("videos",serializer.data)
+        # serializer = FetchedDataSerializer(filterFetchResult(response), many=True)
+        # insertMany("videos",serializer.data)
     except HttpError as e:
         response=[]
         ec =e.resp.status
@@ -107,9 +117,9 @@ async def fetchFromYoutubeAPI():
         else:
             # Remove the invalid key
             removeInvalidKey()
-            print("Invalid Key ",DEVELOPER_KEY)
-    except :
-        print("Youtube API Failed, possible unhandled error")
+            print("Invalid API Key ",DEVELOPER_KEY)
+    except Exception as err:
+        print("Youtube API Failed, possible unhandled error :" , err)
     # print(filterFetchResult(response))
     # for val in filterFetchResult(response):
     #     serializer = FetchedDataSerializer(val, many=False)
@@ -132,12 +142,12 @@ async def fetchAPI(request):
             # task.add_done_callback(background_tasks.discard)
         except HttpError as e:
             print(e.resp.status, e.content)
-        except :
-            print("The async call function is down")        
+        except Exception as err:
+            print("The async call function is down : ",err)        
     except HttpError as e:
         print(e.resp.status, e.content)
-    except :
-        print("The async call function is down")
+    except Exception as err:
+        print("The async call function is down : ",err)
     return redirect("dashboard")
 
 # To stop the background process
