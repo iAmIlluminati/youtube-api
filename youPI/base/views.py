@@ -101,34 +101,44 @@ def stopAPI(request):
 
 # DASHBOARD APIS
 #Dashboard to query the api
-def dashboard(request):
+def dashboard(request,page=1):
     PAGESIZE=6
-    PAGENUM=1
-    PAGESORT=-1
+    PAGESORT=pymongo.DESCENDING
     PAGEFILTER={}
-    if(request.GET.get('page', '')):
-        try: 
-            PAGENUM = int(request.GET.get('page', ''))
-        except:
+    title=""
+    
+    try:
+        PAGENUM=round(float(page))
+        if(PAGENUM<=0):
             PAGENUM=1
+    except:
+        print("Error in page")
+        PAGENUM=1
+    
     if(request.GET.get('sort', '')):
         try: 
             PAGESORT = int(request.GET.get('sort', ''))
-            if(PAGESORT==-1):
+            if(PAGESORT==0):
                 PAGESORT=pymongo.DESCENDING
             else:
                 PAGESORT=pymongo.ASCENDING
         except:                
             PAGESORT=pymongo.DESCENDING
-
-
+    
     if(request.GET.get('title', '')):
         try: 
-            PAGEFILTER = {"title":request.GET.get('title', '')}
+            title=request.GET.get('title', '')
+            PAGEFILTER = {"title":{ "$regex" :request.GET.get('title', '')}}
         except:
+            title=""
             PAGEFILTER={}
-            
+    
     videos = getPagedFind("videos",PAGEFILTER,PAGESORT,PAGESIZE,PAGENUM)
+    params={
+        "title":title,
+        "sort":PAGESORT,
+        "page":PAGENUM
+    }
     context ={"videos":videos}
     return render(request,"dashboard.html",context)
 
