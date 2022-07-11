@@ -51,6 +51,13 @@ python manage.py runserver
 
 ### Starting the Background Fetch
 
-> ⚠ Ping to http://127.0.0.1:8000/api to start the background fetch, It can be stopped only by stopping the server
+> ⚠ Ping to http://127.0.0.1:8000/api to start the background fetch
+
+#
+
+
+### Stopping the Background Fetch
+
+> ⚠ Ping to http://127.0.0.1:8000/stop to stop the background fetch
 
 #
