@@ -1,0 +1,48 @@
+<div class="toggleFetch font-bold text-xl">
+   Fetch Data <input type="checkbox" id="switch" /><label for="switch">Fetch Data</label>
+</div>
+
+<style>
+.toggleFetch input[type=checkbox] {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+  }
+  
+ .toggleFetch label {
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 6rem;
+    height: 2.7rem;
+    background: rgb(141, 1, 1);
+    display: block;
+    border-radius: 100px;
+    position: relative;
+  }
+  
+  .toggleFetch label:after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 5px;
+    width: 2.2rem;
+    height: 2.2rem;
+    background: #fff;
+    border-radius: 90px;
+    transition: 0.3s;
+  }
+  
+  .toggleFetch input:checked + label {
+    background: #0faa17;
+  }
+  
+ .toggleFetch input:checked + label:after {
+    left: calc(100% - 5px);
+    transform: translateX(-100%);
+  }
+  
+  .toggleFetch label:active:after {
+    width: 130px;
+  }
+  
+</style>
