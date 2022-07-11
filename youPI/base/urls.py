@@ -11,7 +11,7 @@ urlpatterns = [
 
     path('api', views.fetchAPI,name='api'),
     # TODO Need to configure way to stop BG process
-    # path('stop', views.stopAPI,name='stop'),
+    path('stop', views.stopAPI,name='stop'),
 
     path('reset', views.resetKeys,name='reset'),
 

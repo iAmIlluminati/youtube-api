@@ -1,18 +1,22 @@
 import pymongo
 # db =""
-try:
-    # CAN USE ENIRONMENT VARIABLE INSTEAD OF THIS
-    #IGNORE THIS LESS SECURE ONE, WANTED THE ASSIGNMTNT TO BE EASILY TESTABLE
-    connection_string="mongodb+srv://youtube-api:api-ebutuoy@cluster0.nkhhjii.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(connection_string)
-    db = client['youtube-api']
-    # Descending order of time
-    db["videos"].create_index([('publishedAt',pymongo.DESCENDING)], name="videos_index_desc")
-    # # Ascending order of time
-    db["videos"].create_index([('publishedAt',pymongo.ASCENDING)], name="videos_index_asc")
-    db["keys"].create_index([('status',pymongo.ASCENDING)], name="key_status_index_asc")
-except:
-    print("Error in accessing the DB, check the connection URL")
+flag=1
+while flag :
+    try:
+        # CAN USE ENIRONMENT VARIABLE INSTEAD OF THIS
+        #IGNORE THIS LESS SECURE ONE, WANTED THE ASSIGNMTNT TO BE EASILY TESTABLE
+        connection_string="mongodb+srv://youtube-api:api-ebutuoy@cluster0.nkhhjii.mongodb.net/?retryWrites=true&w=majority"
+        client = pymongo.MongoClient(connection_string)
+        db = client['youtube-api']
+        # Descending order of time
+        db["videos"].create_index([('publishedAt',pymongo.DESCENDING)], name="videos_index_desc")
+        # # Ascending order of time
+        db["videos"].create_index([('publishedAt',pymongo.ASCENDING)], name="videos_index_asc")
+        db["keys"].create_index([('status',pymongo.ASCENDING)], name="key_status_index_asc")
+        flag=0
+        print("DB Connection successfull")
+    except:
+        print("Error in accessing the DB, check the connection URL")
 
 
 def getDB():

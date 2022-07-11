@@ -137,15 +137,20 @@ async def fetchFromYoutubeAPI():
 
 
 
-
+task = 0
+FLAG=1
 # To start the background process
 async def fetchAPI(request):
+    global task
+    global FLAG 
+    FLAG =1
     try:
-        task = asyncio.create_task(fetchFromYoutubeAPI())
+        if not FLAG :
+            task = asyncio.create_task(fetchFromYoutubeAPI())
         # Add task to the set. This creates a strong reference.
-        background_tasks.add(task)
+        # background_tasks.add(task)
         try:    
-            while True:
+            while FLAG:
                 await fetchFromYoutubeAPI()
                 await asyncio.sleep(TIME_DELAY)
             # task.add_done_callback(background_tasks.discard)
@@ -160,10 +165,33 @@ async def fetchAPI(request):
     return redirect("dashboard")
 
 # To stop the background process
-# def stopAPI(request):
-#     print(background_tasks)
-#     background_tasks.cancel()
-#     return HttpResponse("Hello")
+def stopAPI(request):
+    # global task
+    # print(task)
+    # print(task.cancel())
+    # task = 0
+    global FLAG 
+    FLAG = 0 
+    # ts = [
+    #     t 
+    #     for t 
+    #     in asyncio.all_tasks() 
+    #     if (
+    #         t is not asyncio.current_task()
+    #         and t._coro.__name__ != 'main'
+    #     )
+    # ]
+
+    # for k in ts:
+    #     print(k)
+    #     k.cancel()
+
+    # print(background_tasks)
+    # # background_tasks.cancel()
+    # for i in background_tasks :
+    #     print(i.cancel())
+    #     print()
+    return HttpResponse("Hello")
 
 # --------------------------------------------------------------------------------------------------
 
