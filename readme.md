@@ -77,19 +77,10 @@ python manage.py runserver
 	</thead>
 	<tr>
 		<td>
-Dashboard 
-
-![This is Dashboard](youPI/static/images/Dashboard.png)
-
+            <img src="youPI/static/images/Dashboard.png" alt="Dashboard" width="50%"/>
 		</td>
 		<td>
-
-API Keys Handling Page
-
-![This is Keys Handling Page](youPI/static/images/KeysPage.png)
-
-
-
+            <img src="youPI/static/images/KeysPage.png" alt="API Keys Page" width="50%"/>
 		</td>
 	</tr>
 </table>
