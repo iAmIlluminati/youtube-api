@@ -1,5 +1,5 @@
 <div class="toggleFetch font-bold text-xl">
-   Fetch Data <input type="checkbox" id="switch" /><label for="switch">Fetch Data</label>
+   Fetch Data <input type="checkbox" onchange="doFetch()" id="switch" /><label for="switch">Fetch Data</label>
 </div>
 
 <style>
@@ -21,7 +21,7 @@
   }
   
   .toggleFetch label:after {
-    content: "";
+    content: "off";
     position: absolute;
     top: 4px;
     left: 5px;
