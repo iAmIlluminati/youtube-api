@@ -16,8 +16,9 @@ while flag :
         db["keys"].create_index([('status',pymongo.ASCENDING)], name="key_status_index_asc")
         flag=0
         print("DB Connection successfull")
-    except:
-        print("Error in accessing the DB, check the connection URL")
+    except Exception as err:
+        print(err)
+        # print("Error in accessing the DB, check the connection URL")
         time.sleep(2)
 
 
