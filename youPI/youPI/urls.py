@@ -23,5 +23,5 @@ urlpatterns = [
     #     "favicon.ico",
     #     RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
     # ),
-    path('',include("youPI/base.urls")),
+    path('',include("youPI.base.urls")),
 ]
