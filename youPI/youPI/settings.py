@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 import environ
 from pathlib import Path
-
+import os
 
 env = environ.Env()
 environ.Env.read_env()
@@ -63,7 +63,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'youPI.urls'
 
-STATIC_URL  ='/static/'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# STATIC_ROOT = os.path.normpath(os.path.join(BASE_DIR, 'static'))
+
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
+
+# STATIC_URL  ='/static/'
 STATICFILES_DIRS = [
     
     BASE_DIR / "static"
