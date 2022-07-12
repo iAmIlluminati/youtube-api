@@ -61,3 +61,5 @@ python manage.py runserver
 > ⚠ Ping to http://127.0.0.1:8000/stop to stop the background fetch
 
 #
+
+![This is Dashboard](youPI/static/images/Dashboard.png)
