@@ -77,10 +77,10 @@ python manage.py runserver
 	</thead>
 	<tr>
 		<td>
-            <img src="youPI/static/images/Dashboard.png" alt="Dashboard" width="50%"/>
+            <img src="youPI/static/images/Dashboard.png" alt="Dashboard"/>
 		</td>
 		<td>
-            <img src="youPI/static/images/KeysPage.png" alt="API Keys Page" width="50%"/>
+            <img src="youPI/static/images/KeysPage.png" alt="API Keys Page"/>
 		</td>
 	</tr>
 </table>
