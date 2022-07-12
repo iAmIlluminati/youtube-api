@@ -1,4 +1,5 @@
 import pymongo
+import time
 # db =""
 flag=1
 while flag :
@@ -17,6 +18,8 @@ while flag :
         print("DB Connection successfull")
     except:
         print("Error in accessing the DB, check the connection URL")
+        time.sleep(2)
+
 
 
 def getDB():
