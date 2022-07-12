@@ -1,4 +1,4 @@
 from django.conf import settings
 
-ROOT_URLCONF = 'youPI.urls'
+ROOT_URLCONF = 'youPI.youPI.urls'
 
