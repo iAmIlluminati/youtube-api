@@ -2,6 +2,22 @@
    Fetch Data <input type="checkbox" onchange="doFetch()" id="switch" /><label for="switch">Fetch Data</label>
 </div>
 
+
+<script type="text/javascript">
+  const stateENDPOINT="/state"
+  fetch(stateENDPOINT)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+    if(data.message=="1"){
+      document.getElementById("switch").checked = true;
+      console.log("Here")
+    }else{
+      document.getElementById("switch").checked = false;
+    }
+  })
+</script>
+
 <style>
 .toggleFetch input[type=checkbox] {
     height: 0;

@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.shortcuts import render,redirect
 from httplib2 import Response
 
@@ -138,7 +138,7 @@ async def fetchFromYoutubeAPI():
 
 
 taskFLAG = 0
-FLAG=1
+FLAG=0
 # To start the background process
 async def fetchAPI(request):
     global taskFLAG
@@ -169,7 +169,11 @@ async def fetchAPI(request):
 def stopAPI(request):
     global FLAG 
     FLAG = 0 
-    return HttpResponse("Background Fetch Stopped")
+    return JsonResponse({ "message" : "Background Fetch Stopped"})
+
+def getAPIState(request):
+    global FLAG
+    return  JsonResponse({ "message" : str(FLAG)})
 
 # --------------------------------------------------------------------------------------------------
 
