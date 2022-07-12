@@ -65,6 +65,7 @@ ROOT_URLCONF = 'youPI.urls'
 
 STATIC_URL  ='/static/'
 STATICFILES_DIRS = [
+    
     BASE_DIR / "static"
 ]
 
