@@ -51,14 +51,14 @@ python manage.py runserver
 
 ### Starting the Background Fetch
 
->  Ping to http://127.0.0.1:8000/api to start the background fetch
+>  Ping to http://127.0.0.1:8000/api to start the background fetch or use the toggle in navbar
 
 #
 
 
 ### Stopping the Background Fetch
 
->  Ping to http://127.0.0.1:8000/stop to stop the background fetch
+>  Ping to http://127.0.0.1:8000/stop to stop the background fetch or use the toggle in navbar
 
 #
 
