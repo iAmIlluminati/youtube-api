@@ -1,0 +1,4 @@
+Try to use unsync
+Try to use motor for mongodb
+Try to aiohttp instead of request
+Use cronjobs with celery to avoid miss-out of fetch on error 

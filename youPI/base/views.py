@@ -57,7 +57,7 @@ def resetAllKeys():
 background_tasks = set()
 TIME_DELAY = 15  
 #Period of API fetch 
-QUERYLIST =["polimer news","songs","album","comedy","football""cricket","hindi","english"]
+QUERYLIST =["polimer news","songs","album","comedy","football","cricket","hindi","english"]
  
 
 # Converting the fetch values into required format
@@ -134,7 +134,6 @@ async def fetchFromYoutubeAPI():
     #     serializer = FetchedDataSerializer(val, many=False)
     #     print(serializer.data)
     #     insertOne("videos",serializer.data)
-
 
 
 taskFLAG = 0
